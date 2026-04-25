@@ -51,3 +51,51 @@ def track_model(
         return dist_outer
     else:
         return dist_inner
+
+
+if __name__ == "__main__":
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    def points_on_rect(
+        width: float,
+        height: float,
+        x: float,
+        y: float,
+        x_density: int | None = None,
+        y_density: int | None = None,
+    ):
+        x_density = int(width * 10) if x_density is None else x_density
+        y_density = int(height * 10) if y_density is None else y_density
+
+        points = np.dstack(
+            np.meshgrid(
+                np.linspace(x - width / 2, x + width / 2, x_density),
+                np.linspace(y - height / 2, y + height / 2, y_density),
+            )
+        ).reshape(
+            -1, 2
+        )  # From https://stackoverflow.com/a/11146645
+
+        return points
+
+    points = points_on_rect(0.5, 0.3, 0, 0.075, x_density=200, y_density=120)
+
+    distances = list(map(lambda p: classify_ellipse_point(p[0], p[1], 0, 0.075, 0.125, 0.075), points))
+    min_distance = min(distances)
+    max_distance = max(distances)
+
+    colors = list(map(lambda d: (d + min_distance) / (min_distance + max_distance), distances))
+
+    plt.scatter(points[:, 0], points[:, 1], c=colors)
+    plt.axis("equal")
+    plt.show()
+
+    plt.clf()
+
+    distances = list(map(lambda p: track_model(p[0], p[1], 0, 0.075, 0.125, 0.075, 0.015), points))
+    colors = list(map(lambda d: 0 if d == 0 else 1, distances))
+
+    plt.scatter(points[:, 0], points[:, 1], c=colors)
+    plt.axis("equal")
+    plt.show()
