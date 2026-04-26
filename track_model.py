@@ -71,6 +71,7 @@ def track_model(
 if __name__ == "__main__":
     import numpy as np
     import matplotlib.pyplot as plt
+    from matplotlib.patches import Ellipse
 
     def points_on_rect(
         width: float,
@@ -103,14 +104,44 @@ if __name__ == "__main__":
     colors = list(map(lambda d: (d + min_distance) / (min_distance + max_distance), distances))
 
     plt.scatter(points[:, 0], points[:, 1], c=colors)
+    
+    plt.xlabel("X (m)")
+    plt.ylabel("Y (m)")
+
+    for dist in map(lambda x: x / 5, range(5)):
+        plt.scatter([], [], c=plt.get_cmap()(dist), label="On Ellipse" if dist == 0 else f"{dist}m From Ellipse")
+
+    plt.legend()
+    
     plt.axis("equal")
+
     plt.show()
 
     plt.clf()
 
-    distances = list(map(lambda p: classify_ellipse_point(p[0], p[1], 0, 0.075, 0.125, 0.075, 0.015), points))
-    colors = list(map(lambda d: 0 if d == 0 else 1, distances))
+    distances = list(map(lambda p: abs(classify_ellipse_point(p[0], p[1], 0, 0.075, 0.125, 0.075, 0.015)), points))
+    min_distance = min(distances)
+    max_distance = max(distances)
+
+    colors = list(map(lambda d: (d + min_distance) / (min_distance + max_distance), distances))
+    # colors = list(map(lambda d: 0 if d == 0 else 1, distances))
 
     plt.scatter(points[:, 0], points[:, 1], c=colors)
+
+    ellipse = Ellipse(xy=(0, 0.075), width=0.235, height=0.135, edgecolor='r', fc='None', lw=0.5)
+    plt.gca().add_patch(ellipse)
+
+    ellipse = Ellipse(xy=(0, 0.075), width=0.265, height=0.165, edgecolor='r', fc='None', lw=0.5)
+    plt.gca().add_patch(ellipse)
+
+    plt.xlabel("X (m)")
+    plt.ylabel("Y (m)")
+    
+    for dist in map(lambda x: x / 5, range(5)):
+        plt.scatter([], [], c=plt.get_cmap()(dist), label="On Ellipse" if dist == 0 else f"{dist}m From Ellipse")
+    
+    plt.legend()
+
     plt.axis("equal")
+    
     plt.show()
