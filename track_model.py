@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     points = points_on_rect(0.5, 0.3, 0, 0.075, x_density=200, y_density=120)
 
-    distances = list(map(lambda p: classify_ellipse_point(p[0], p[1], 0, 0.075, 0.125, 0.075), points))
+    distances = list(map(lambda p: abs(classify_ellipse_point(p[0], p[1], 0, 0.075, 0.125, 0.075)), points))
     min_distance = min(distances)
     max_distance = max(distances)
 
