@@ -26,7 +26,7 @@ def ellipse_level_set_distance(x: float, y: float, ellipse_x: float, ellipse_y: 
 #   0 if point is on ellipse
 #   > 0 if point is outside of ellipse
 def classify_ellipse_point(
-    x: float, y: float, ellipse_x: float, ellipse_y: float, a: float, b: float, thickness: float
+    x: float, y: float, ellipse_x: float, ellipse_y: float, a: float, b: float, thickness: float = 0
 ) -> float:
     dist_inner = ellipse_level_set_distance(
         x, y, ellipse_x, ellipse_y, a - thickness / 2, b - thickness / 2
