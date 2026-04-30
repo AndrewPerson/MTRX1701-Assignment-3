@@ -34,7 +34,7 @@ def vehicle_model(robot_state, control_vector, dt: float):
 # function: control_vector
 # inputs:
 #   right_vel - velocity of the right wheel (ms^-1)
-#   left_vel - velcocity of the left wheel (ms^-1)
+#   left_vel - velocity of the left wheel (ms^-1)
 #   robot_width - width of robot (m)
 # returns:
 #   vector of control inputs [velocity, heading]
