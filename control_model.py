@@ -68,6 +68,4 @@ def control_model_proportional(
     left_vel = 1 if error <= 0 else 2 / (1 + sensitivity * error) - 1
     right_vel = 1 if error >= 0 else 2 / (1 + sensitivity * -error) - 1
 
-    return max(-v_max, min(v_max * right_vel, v_max)), max(
-        0, min(v_max * left_vel, v_max)
-    )
+    return v_max * right_vel, v_max * left_vel
