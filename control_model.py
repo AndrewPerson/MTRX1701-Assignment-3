@@ -49,7 +49,7 @@ def control_model_proportional(
     left_sensor_dist: float,
     v_max: float,
 ):
-    sensitivity = 0.4
+    sensitivity = 10
 
     right_vel = v_max
     left_vel = v_max
@@ -66,7 +66,7 @@ def control_model_proportional(
     # error = 0 => right_vel = 1, left_vel = 1 (straight ahead)
 
     left_vel = 1 if error <= 0 else 2 / (1 + sensitivity * error) - 1
-    right_vel = 1 if error >= 0 else -2 / (1 + sensitivity * error) - 1
+    right_vel = 1 if error >= 0 else 2 / (1 + sensitivity * -error) - 1
 
     return max(-v_max, min(v_max * right_vel, v_max)), max(
         0, min(v_max * left_vel, v_max)

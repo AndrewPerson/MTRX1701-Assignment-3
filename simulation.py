@@ -72,17 +72,23 @@ def simulate(
 
 
 if __name__ == "__main__":
+    import math
+
     DT = 0.05
     INITIAL_STATE = np.zeros(3)
-    ROBOT_WIDTH = 0.025
-    SENSOR_RADIUS_FROM_CENTER = 0.07905694150420949
-    SENSOR_ANGLE_FROM_CENTER = 0.32175055439664224
+    ROBOT_LENGTH = 0.075
+    ROBOT_WIDTH = 0.05
+    SENSOR_RADIUS_FROM_CENTER = math.sqrt((ROBOT_LENGTH/2) ** 2 + (ROBOT_WIDTH/2) ** 2)
+    SENSOR_ANGLE_FROM_CENTER = math.atan2(ROBOT_WIDTH / 2, ROBOT_LENGTH / 2)
     ELLIPSE_X = 0
     ELLIPSE_Y = 0.075
     ELLIPSE_RADIUS_A = 0.2
     ELLIPSE_RADIUS_B = 0.075
     ELLIPSE_THICKNESS = 0.015
-    V_MAX = 0.00625
+
+    WHEEL_RADIUS = 0.018 # m
+    WHEEL_ANGULAR_VELOCITY = 7.645 # rad
+    V_MAX = WHEEL_RADIUS * WHEEL_ANGULAR_VELOCITY
 
     Xs = simulate(
         np.arange(0, 240, DT),
@@ -107,10 +113,12 @@ if __name__ == "__main__":
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
     ax1.plot(Xs[:, 1], Xs[:, 2], label='Robot Path', color='blue')
+    # ax1.plot(Xs[:, 6], Xs[:, 7], label='Right Sensor Path', color='green')
+    # ax1.plot(Xs[:, 8], Xs[:, 9], label='Left Sensor Pat', color='green')
 
 
     ellipse = Ellipse(xy=(ELLIPSE_X, ELLIPSE_Y), width=ELLIPSE_RADIUS_A * 2, height=ELLIPSE_RADIUS_B * 2, 
-                            edgecolor='r', fc='None', lw=2)
+                            edgecolor='r', fc='None', lw=2, label="Target Path")
 
     ax1.add_patch(ellipse)
 
@@ -121,12 +129,12 @@ if __name__ == "__main__":
     ax1.grid(True)
     ax1.legend()
 
-    ax2.plot(Xs[:, 0], Xs[:, 3], color='red')
+    ax2.plot(Xs[:, 0], Xs[:, 3] % (2 * math.pi), color='red', label="Heading")
     ax2.set_title("Vehicle Heading vs. Time")
     ax2.set_xlabel("Time (s)")
-    ax2.set_ylabel("Heading Angle (rad)")
+    ax2.set_ylabel("Angle (rad)")
     ax2.grid(True)
+    ax2.legend()
 
     plt.tight_layout()
     plt.show()
-
