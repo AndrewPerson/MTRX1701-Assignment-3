@@ -86,6 +86,3 @@ if __name__ == "__main__":
     plt.title("2d: Path with Full Speed vs Half Speed")
     plt.show()
     plt.savefig("assignment3_2d_plot.png")
-
-    # In 2c:(equal wheel speed)when both the left and the right wheels were driven at the same velocity, the resulting path is a straight line.Mathematically, the vehicle model is calculated as psi_dot = (vr - vl) / (2 * d).So when the velocities are equal the numerator becomes 0 resulting in 0 turn rate.
-    # In 2d: (Different wheel speed)When the wheels are with different speeds, (one with full speed and another with half the speed) the robot follows a circular path.In this case, vr is not equal to vl.
