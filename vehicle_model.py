@@ -4,14 +4,13 @@ import numpy as np
 # function: derivatives
 # inputs:
 #   robot_state - robot state [x, y, heading]
-#   control_vector - control inputs [velocity, heading]
+#   control_vector - control inputs [velocity, angular velocity]
 # returns:
 #   vector of state derivatives [x velocity, y velocity, angular velocity]
 def derivatives(robot_state, control_vector):
-    # Put your code here
     heading = robot_state[2]
     vel = control_vector[0]
-    
+
     x = vel * np.cos(heading)
     y = vel * np.sin(heading)
 
@@ -27,7 +26,7 @@ def derivatives(robot_state, control_vector):
 #   dt - time since last update (s)
 # returns:
 #   robot state dt seconds into the future [x, y, heading]
-def vehicle_model(robot_state, control_vector, dt):
+def vehicle_model(robot_state, control_vector, dt: float):
     deriv = derivatives(robot_state, control_vector)
     return robot_state + dt * deriv
 
@@ -39,7 +38,7 @@ def vehicle_model(robot_state, control_vector, dt):
 #   robot_width - width of robot (m)
 # returns:
 #   vector of control inputs [velocity, heading]
-def control_vector(right_vel, left_vel, robot_width):
+def control_vector(right_vel: float, left_vel: float, robot_width: float):
     v = (right_vel + left_vel) / 2
     heading = (right_vel - left_vel) / (2 * robot_width)
 
@@ -49,13 +48,22 @@ def control_vector(right_vel, left_vel, robot_width):
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
-    def plot_path(right_vel, left_vel, start_time=0, end_time=10, dt=0.01, robot_width=0.05):
-        path = []
-        
+    def plot_path(
+        right_vel: float,
+        left_vel: float,
+        start_time: float = 0,
+        end_time: float = 10,
+        dt: float = 0.01,
+        robot_width: float = 0.05,
+    ):
+        path: list[float] = []
+
         state = np.array([0.0, 0.0, 0.0])
         for _ in np.arange(start_time, end_time, dt):
             path.append(state)
-            state = vehicle_model(state, control_vector(right_vel, left_vel, robot_width), dt)
+            state = vehicle_model(
+                state, control_vector(right_vel, left_vel, robot_width), dt
+            )
 
         path = np.array(path)
 
@@ -63,7 +71,6 @@ if __name__ == "__main__":
         plt.xlabel("x (m)")
         plt.ylabel("y (m)")
         plt.axis("equal")
-
 
     plot_path(0.1, 0.1)
 

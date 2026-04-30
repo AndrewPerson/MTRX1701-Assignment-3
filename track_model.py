@@ -10,8 +10,11 @@
 #   < 0 if point is inside ellipse
 #   0 if point is on ellipse
 #   > 0 if point is outside of ellipse
-def ellipse_level_set_distance(x: float, y: float, ellipse_x: float, ellipse_y: float, a: float, b: float) -> float:
+def ellipse_level_set_distance(
+    x: float, y: float, ellipse_x: float, ellipse_y: float, a: float, b: float
+) -> float:
     return ((x - ellipse_x) / a) ** 2 + ((y - ellipse_y) / b) ** 2 - 1
+
 
 # function: classify_ellipse_point
 # inputs:
@@ -26,15 +29,23 @@ def ellipse_level_set_distance(x: float, y: float, ellipse_x: float, ellipse_y: 
 #   0 if point is on ellipse
 #   > 0 if point is outside of ellipse
 def classify_ellipse_point(
-    x: float, y: float, ellipse_x: float, ellipse_y: float, a: float, b: float, thickness: float = 0
+    x: float,
+    y: float,
+    ellipse_x: float,
+    ellipse_y: float,
+    a: float,
+    b: float,
+    thickness: float = 0,
 ) -> float:
     dist_inner = ellipse_level_set_distance(
         x, y, ellipse_x, ellipse_y, a - thickness / 2, b - thickness / 2
     )
+
     dist_outer = ellipse_level_set_distance(
         x, y, ellipse_x, ellipse_y, a + thickness / 2, b + thickness / 2
     )
 
+    # Point is on ellipse if it lies between inner and outer bounding ellipses
     if dist_inner > 0 and dist_outer < 0:
         return 0
     elif dist_outer > 0:
@@ -97,51 +108,83 @@ if __name__ == "__main__":
 
     points = points_on_rect(0.5, 0.3, 0, 0.075, x_density=200, y_density=120)
 
-    distances = list(map(lambda p: abs(classify_ellipse_point(p[0], p[1], 0, 0.075, 0.125, 0.075, 0)), points))
+    distances = list(
+        map(
+            lambda p: abs(
+                classify_ellipse_point(p[0], p[1], 0, 0.075, 0.125, 0.075, 0)
+            ),
+            points,
+        )
+    )
+
     min_distance = min(distances)
     max_distance = max(distances)
 
-    colors = list(map(lambda d: (d + min_distance) / (min_distance + max_distance), distances))
+    colors = list(
+        map(lambda d: (d + min_distance) / (min_distance + max_distance), distances)
+    )
 
     plt.scatter(points[:, 0], points[:, 1], c=colors)
-    
+
     plt.xlabel("X (m)")
     plt.ylabel("Y (m)")
 
     for dist in map(lambda x: x / 5, range(5)):
-        plt.scatter([], [], c=plt.get_cmap()(dist), label="On Ellipse" if dist == 0 else f"{dist}m From Ellipse")
+        plt.scatter(
+            [],
+            [],
+            c=plt.get_cmap()(dist),
+            label="On Ellipse" if dist == 0 else f"{dist}m From Ellipse",
+        )
 
     plt.legend()
-    
+
     plt.axis("equal")
 
     plt.show()
 
     plt.clf()
 
-    distances = list(map(lambda p: abs(classify_ellipse_point(p[0], p[1], 0, 0.075, 0.125, 0.075, 0.015)), points))
+    distances = list(
+        map(
+            lambda p: abs(
+                classify_ellipse_point(p[0], p[1], 0, 0.075, 0.125, 0.075, 0.015)
+            ),
+            points,
+        )
+    )
     min_distance = min(distances)
     max_distance = max(distances)
 
-    colors = list(map(lambda d: (d + min_distance) / (min_distance + max_distance), distances))
-    # colors = list(map(lambda d: 0 if d == 0 else 1, distances))
+    colors = list(
+        map(lambda d: (d + min_distance) / (min_distance + max_distance), distances)
+    )
 
     plt.scatter(points[:, 0], points[:, 1], c=colors)
 
-    ellipse = Ellipse(xy=(0, 0.075), width=0.235, height=0.135, edgecolor='r', fc='None', lw=0.5)
+    ellipse = Ellipse(
+        xy=(0, 0.075), width=0.235, height=0.135, edgecolor="r", fc="None", lw=0.5
+    )
     plt.gca().add_patch(ellipse)
 
-    ellipse = Ellipse(xy=(0, 0.075), width=0.265, height=0.165, edgecolor='r', fc='None', lw=0.5)
+    ellipse = Ellipse(
+        xy=(0, 0.075), width=0.265, height=0.165, edgecolor="r", fc="None", lw=0.5
+    )
     plt.gca().add_patch(ellipse)
 
     plt.xlabel("X (m)")
     plt.ylabel("Y (m)")
-    
+
     for dist in map(lambda x: x / 5, range(5)):
-        plt.scatter([], [], c=plt.get_cmap()(dist), label="On Ellipse" if dist == 0 else f"{dist}m From Ellipse")
-    
+        plt.scatter(
+            [],
+            [],
+            c=plt.get_cmap()(dist),
+            label="On Ellipse" if dist == 0 else f"{dist}m From Ellipse",
+        )
+
     plt.legend()
 
     plt.axis("equal")
-    
+
     plt.show()

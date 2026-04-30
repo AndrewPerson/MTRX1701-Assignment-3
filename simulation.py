@@ -7,17 +7,17 @@ from vehicle_model import vehicle_model, control_vector
 
 def simulate(
     timestamps,
-    dt,
+    dt: float,
     initial_robot_state,
-    robot_width,
-    sensor_radius_from_center,
-    sensor_angle_from_center,
-    ellipse_x,
-    ellipse_y,
-    ellipse_radius_a,
-    ellipse_radius_b,
-    thickness,
-    v_max,
+    robot_width: float,
+    sensor_radius_from_center: float,
+    sensor_angle_from_center: float,
+    ellipse_x: float,
+    ellipse_y: float,
+    ellipse_radius_a: float,
+    ellipse_radius_b: float,
+    thickness: float,
+    v_max: float,
 ):
     world_states = []
 
@@ -48,7 +48,7 @@ def simulate(
         )
 
         [right_vel, left_vel] = control_model(
-            right_sensor_dist, left_sensor_dist, v_max
+            right_sensor_dist, left_sensor_dist, v_max, True
         )
 
         control_vec = control_vector(right_vel, left_vel, robot_width)
@@ -102,22 +102,31 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from matplotlib.patches import Ellipse
 
-    plt.figure(figsize=(8, 6))
-    plt.plot(Xs[:, 1], Xs[:, 2], label="Robot Trajectory (Bang-Bang)")
+    # Xs = simulate(np.arange(0, 240, DT), DT, INITIAL_STATE, d, r, th, x0, y0, a, b, T, v_max)
 
-    # plt.plot(Xs[:, 0], Xs[:, 7])
-    # plt.plot(Xs[:, 0], Xs[:, 8])
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-    plt.title("Line Following Robot Trajectory")
-    plt.xlabel("X Position (m)")
-    plt.ylabel("Y Position (m)")
-    plt.grid(True)
-    plt.legend()
-    plt.axis("equal")
+    ax1.plot(Xs[:, 1], Xs[:, 2], label='Robot Path', color='blue')
+
 
     ellipse = Ellipse(xy=(ELLIPSE_X, ELLIPSE_Y), width=ELLIPSE_RADIUS_A * 2, height=ELLIPSE_RADIUS_B * 2, 
                             edgecolor='r', fc='None', lw=2)
 
-    plt.gca().add_patch(ellipse)
+    ax1.add_patch(ellipse)
 
+    ax1.set_title("Robot Trajectory (Bang-Bang Control)")
+    ax1.set_xlabel("X Position (m)")
+    ax1.set_ylabel("Y Position (m)")
+    ax1.axis('equal') 
+    ax1.grid(True)
+    ax1.legend()
+
+    ax2.plot(Xs[:, 0], Xs[:, 3], color='red')
+    ax2.set_title("Vehicle Heading vs. Time")
+    ax2.set_xlabel("Time (s)")
+    ax2.set_ylabel("Heading Angle (rad)")
+    ax2.grid(True)
+
+    plt.tight_layout()
     plt.show()
+

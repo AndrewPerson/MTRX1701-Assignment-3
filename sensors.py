@@ -10,16 +10,18 @@ import math
 # returns:
 #   r_r, r_l - the relative positions of the right and left sensors compared to the robot's centre
 def relative_sensor_positions(
-    robot_state, sensor_radius_from_center, sensor_angle_from_center
+    robot_state, sensor_radius_from_center: float, sensor_angle_from_center: float
 ):
     heading = robot_state[2]
 
+    # Generate unit vectors based off of heading and then scale
     r_r = sensor_radius_from_center * np.array(
         [
             math.cos(heading - sensor_angle_from_center),
             math.sin(heading - sensor_angle_from_center),
         ]
     )
+
     r_l = sensor_radius_from_center * np.array(
         [
             math.cos(heading + sensor_angle_from_center),
@@ -37,7 +39,9 @@ def relative_sensor_positions(
 #   sensor_angle_from_center - angle from centre of robot to sensor
 # returns:
 #   s_r, s_l - the positions of the right and left sensors
-def sensor_positions(robot_state, sensor_radius_from_center, sensor_angle_from_center):
+def sensor_positions(
+    robot_state, sensor_radius_from_center: float, sensor_angle_from_center: float
+):
     pos = robot_state[:2]
 
     r_r, r_l = relative_sensor_positions(
