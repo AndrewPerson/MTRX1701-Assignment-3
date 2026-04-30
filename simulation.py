@@ -18,7 +18,7 @@ def simulate(
     ellipse_radius_b: float,
     thickness: float,
     v_max: float,
-    use_proportional: bool = False
+    use_proportional: bool = False,
 ):
     world_states = []
 
@@ -49,7 +49,10 @@ def simulate(
         )
 
         [right_vel, left_vel] = control_model(
-            right_sensor_dist, left_sensor_dist, v_max, use_proportional=use_proportional
+            right_sensor_dist,
+            left_sensor_dist,
+            v_max,
+            use_proportional=use_proportional,
         )
 
         control_vec = control_vector(right_vel, left_vel, robot_width)
@@ -94,7 +97,7 @@ if __name__ == "__main__":
     ELLIPSE_THICKNESS = 0.015
 
     WHEEL_RADIUS = 0.018  # m (Taken from measured values in report)
-    WHEEL_ANGULAR_VELOCITY = 7.645  # rad (Taken from measured values in report)
+    WHEEL_ANGULAR_VELOCITY = 0.7645  # rad (Based off of measured values in report. 10x smaller because the robot will be relatively heavy, affecting the motor speed)
     V_MAX = WHEEL_RADIUS * WHEEL_ANGULAR_VELOCITY
 
     def plot(states, trajectory_title):
@@ -121,7 +124,9 @@ if __name__ == "__main__":
         ax1.grid(True)
         ax1.legend()
 
-        ax2.plot(states[:, 0], states[:, 3] % (2 * math.pi), color="red", label="Heading")
+        ax2.plot(
+            states[:, 0], states[:, 3] % (2 * math.pi), color="red", label="Heading"
+        )
         ax2.set_title("Vehicle Heading vs. Time")
         ax2.set_xlabel("Time (s)")
         ax2.set_ylabel("Angle (rad)")
@@ -131,7 +136,6 @@ if __name__ == "__main__":
         fig.tight_layout()
 
         return fig
-    
 
     states = simulate(
         np.arange(0, 240, DT),
@@ -164,7 +168,7 @@ if __name__ == "__main__":
         ELLIPSE_RADIUS_B,
         ELLIPSE_THICKNESS,
         V_MAX,
-        use_proportional=True
+        use_proportional=True,
     )
 
     plot(states, "Robot Trajectory (Proportional Control)")
